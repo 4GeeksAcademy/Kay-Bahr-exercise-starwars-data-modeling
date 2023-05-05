@@ -7,6 +7,19 @@ from eralchemy2 import render_er
 
 Base = declarative_base()
 
+class User(Base):
+    __tablename__ = 'User'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(250), nullable=False)
+
+    def serialize(user):
+        return {
+            "id": user.id,
+            "name": user.name
+        }
+
+
 class Person(Base):
     __tablename__ = 'person'
     # Here we define columns for the table person
