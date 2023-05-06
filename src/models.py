@@ -1,6 +1,5 @@
 import os
 import sys
-import enum
 from sqlalchemy import Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship, declarative_base
 from sqlalchemy import create_engine
@@ -60,16 +59,11 @@ favorites_items = Table('favorites_items', Base.metadata,
     Column('items_item_name', String(250), ForeignKey('Items.item_name'))
 )
 
-class ItemType(enum.Enum):
-    people = 'people'
-    planets = 'planets'
-    starships = 'starships'
-
 class Items(Base):
     __tablename__ = 'Items'
 
     item_name = Column(String(250), primary_key=True)
-    item_type = Column(Enum(ItemType), nullable=False)
+    item_type = Column(String(250), nullable=False)
     data = Column(String(250), nullable=False)
     favorites = relationship('Favorites', secondary='favorites_items', back_populates='items')
 
