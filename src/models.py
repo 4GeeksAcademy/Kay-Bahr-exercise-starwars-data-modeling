@@ -26,15 +26,16 @@ class User(Base):
 class Login(Base):
     __tablename__ = 'Login'
 
-    user_id = Column(Integer, ForeignKey('user.user_id'))
     username = Column(String(250), primary_key=True)
     password = Column(String(250), nullable=False)
+    user_id = Column(Integer, ForeignKey('user.user_id'))
+    user = relationship(User)
 
     def serialize(login):
         return {
-            "id": login.user_id,
             "username": login.username,
-            "password": login.password
+            "password": login.password,
+            "id": login.user_id
         }
 
 class Favorites(Base):
@@ -43,6 +44,7 @@ class Favorites(Base):
     list_id = Column(Integer, primary_key=True)
     item_name = Column(String(250), ForeignKey('items.item_name'))
     user_id = Column(Integer, ForeignKey('user.user_id'))
+    user = relationship(User)
 
     def serialize(favorites):
         return {
@@ -57,6 +59,7 @@ class Items(Base):
     item_name = Column(String(250), primary_key=True)
     item_type = Column(String(250), nullable=False)
     data = Column(String(250), nullable=False)
+    favorites = relationship(Favorites)
 
     def serialize(items):
         return {
@@ -64,6 +67,27 @@ class Items(Base):
             "type": items.item_type,
             "data": items.data
         }
+
+class Person(Base):
+    __tablename__ = 'person'
+    # Here we define columns for the table person
+    # Notice that each column is also a normal Python instance attribute.
+    id = Column(Integer, primary_key=True)
+    name = Column(String(250), nullable=False)
+
+class Address(Base):
+    __tablename__ = 'address'
+    # Here we define columns for the table address.
+    # Notice that each column is also a normal Python instance attribute.
+    id = Column(Integer, primary_key=True)
+    street_name = Column(String(250))
+    street_number = Column(String(250))
+    post_code = Column(String(250), nullable=False)
+    person_id = Column(Integer, ForeignKey('person.id'))
+    person = relationship(Person)
+
+    def to_dict(self):
+        return {}
 
 ## Draw from SQLAlchemy base
 render_er(Base, 'diagram.png')
